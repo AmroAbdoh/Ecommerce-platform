@@ -1,0 +1,138 @@
+.auth-page-shell {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.auth-card {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  overflow: hidden;
+}
+
+.auth-visual {
+  position: relative;
+  background:
+    linear-gradient(rgba(27, 94, 32, 0.45), rgba(13, 47, 18, 0.6)),
+    url("https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80")
+      center/cover no-repeat;
+  display: flex;
+  align-items: flex-end;
+  
+  padding: 48px;
+
+}
+
+.auth-visual-content {
+  color: var(--white);
+  max-width: 420px;
+}
+
+.auth-visual-content h1 {
+  font-size: clamp(2rem, 3vw, 3.1rem);
+  line-height: 1.1;
+  margin: 0 0 12px;
+}
+
+.auth-visual-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-panel {
+  background: #f9fdf9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 42px;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 430px;
+}
+
+.auth-header {
+  margin-bottom: 24px;
+}
+
+.auth-header h2 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 2.4vw, 2.6rem);
+  color: var(--green-900);
+}
+
+.auth-header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.auth-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.auth-checkbox input {
+  accent-color: var(--green-700);
+}
+
+.forgot-link,
+.switch-link {
+  color: var(--green-700);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.switch-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+
+.auth-footer {
+  text-align: center;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-visual {
+    min-height: 260px;
+  }
+
+  .auth-panel {
+    padding: 32px 20px 40px;
+  }
+}

@@ -14,7 +14,8 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = (req.body.email || "").trim().toLowerCase();
+    const password = (req.body.password || "").trim();
 
     if (!email || !password) {
       return next(new BadRequestError("Please provide email and password"));
@@ -33,7 +34,9 @@ const login = async (req, res, next) => {
     }
 
     const token = user.createJWT();
-    return res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+    return res
+      .status(StatusCodes.OK)
+      .json({ user: { name: user.name }, token });
   } catch (error) {
     next(error);
   }

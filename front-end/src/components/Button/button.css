@@ -1,0 +1,18 @@
+.primary-btn {
+  width: 100%;
+  border: none;
+  background: linear-gradient(135deg, var(--green-700), var(--green-300));
+  color: var(--white);
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 12px 22px rgba(27, 94, 32, 0.2);
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+}
