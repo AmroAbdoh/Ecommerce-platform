@@ -16,6 +16,7 @@ const login = async (req, res, next) => {
   try {
     const email = (req.body.email || "").trim().toLowerCase();
     const password = (req.body.password || "").trim();
+    // 
 
     if (!email || !password) {
       return next(new BadRequestError("Please provide email and password"));
