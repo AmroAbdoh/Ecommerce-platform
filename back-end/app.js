@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const storeRoutes = require("./routes/storeRoutes");
 
 const app = express();
 
@@ -13,7 +15,14 @@ app.get("/", (req, res) => {
   });
 });
 
+// Authentication
 app.use("/api/auth", authRoutes);
+
+// User
+app.use("/api/users", userRoutes);
+
+// Store
+app.use("/api/stores", storeRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

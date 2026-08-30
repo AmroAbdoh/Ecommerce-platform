@@ -16,3 +16,7 @@
 .primary-btn:hover {
   transform: translateY(-1px);
 }
+
+.link{
+  text-decoration: none;
+}
