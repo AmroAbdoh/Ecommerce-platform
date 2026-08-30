@@ -6,7 +6,12 @@ const register = async (req, res, next) => {
   try {
     const user = await User.create({ ...req.body });
     const token = user.createJWT();
-    res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+    res
+      .status(StatusCodes.CREATED)
+      .json({
+        user: { name: user.name, email: user.email, role: user.role },
+        token,
+      });
   } catch (error) {
     next(error);
   }
@@ -37,7 +42,10 @@ const login = async (req, res, next) => {
     const token = user.createJWT();
     return res
       .status(StatusCodes.OK)
-      .json({ user: { name: user.name }, token });
+      .json({
+        user: { name: user.name, email: user.email, role: user.role },
+        token,
+      });
   } catch (error) {
     next(error);
   }

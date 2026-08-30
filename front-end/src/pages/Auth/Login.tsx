@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthInput from "../../components/InputField/Input";
-import AuthButton from "../../components/Button/Button";
+import PrimaryButton from "../../components/Button/Button";
 import { loginUser, registerUser } from "../../services/authApi";
 import "./AuthPage.css";
 
@@ -48,6 +48,8 @@ function AuthPage() {
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("userName", response.user.name);
+      localStorage.setItem("userEmail", response.user.email);
+      localStorage.setItem("userRole", response.user.role || "customer");
       navigate("/");
     } catch (error: any) {
       setErrorMessage(
@@ -123,7 +125,7 @@ function AuthPage() {
 
               {errorMessage && <p className="auth-error">{errorMessage}</p>}
 
-              <AuthButton
+              <PrimaryButton
                 label={
                   isSubmitting
                     ? isLogin

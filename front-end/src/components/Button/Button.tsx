@@ -1,16 +1,32 @@
 import "./button.css";
 
-type AuthButtonProps = {
+type ButtonProps = {
   label: string;
   disabled?: boolean;
+  onClick?: () => void;
+  type?: "submit" | "button";
+  variant?: "primary" | "secondary";
 };
 
-function AuthButton({ label, disabled = false }: AuthButtonProps) {
+function PrimaryButton({
+  label,
+  disabled = false,
+  onClick,
+  type = "submit",
+  variant = "primary",
+}: ButtonProps) {
+  const buttonClass = variant === "secondary" ? "secondary-btn" : "primary-btn";
+
   return (
-    <button type="submit" className="primary-btn" disabled={disabled}>
+    <button
+      type={type}
+      className={buttonClass}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {label}
     </button>
   );
 }
 
-export default AuthButton;
+export default PrimaryButton;

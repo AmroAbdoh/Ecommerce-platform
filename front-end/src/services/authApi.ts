@@ -13,6 +13,8 @@ export type AuthRequest = {
 export type AuthResponse = {
   user: {
     name: string;
+    email: string;
+    role?: string;
   };
   token: string;
 };
@@ -33,6 +35,9 @@ export const registerUser = async (payload: AuthRequest) => {
 };
 
 export const forgetPasswordUser = async (payload: ForgotPasswordRequest) => {
-  const response = await api.patch<{ message: string }>('/auth/forgetPassword', payload);
+  const response = await api.patch<{ message: string }>(
+    "/auth/forgetPassword",
+    payload,
+  );
   return response.data;
 };

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthInput from "../../components/InputField/Input";
-import AuthButton from "../../components/Button/Button";
+import PrimaryButton from "../../components/Button/Button";
 import { forgetPasswordUser } from "../../services/authApi";
 import "./AuthPage.css";
 
@@ -92,7 +92,7 @@ function ForgetPassword() {
                 <p className="auth-notification success">{successMessage}</p>
               )}
 
-              <AuthButton
+              <PrimaryButton
                 label={isSubmitting ? "Updating..." : "Update password"}
                 disabled={isSubmitting}
               />

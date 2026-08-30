@@ -5,12 +5,16 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("token")),
   );
+  const [isSeller, setIsSeller] = useState(
+    localStorage.getItem("userRole") === "seller",
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const syncAuthState = () => {
       setIsLoggedIn(Boolean(localStorage.getItem("token")));
+      setIsSeller(localStorage.getItem("userRole") === "seller");
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,7 +35,9 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
     setIsLoggedIn(false);
+    setIsSeller(false);
     setIsMenuOpen(false);
   };
 
@@ -83,12 +89,18 @@ function Navbar() {
                   Profile
                 </a>
 
-                <a
-                  href="/BecomeSeller"
-                  className="navbar__dropdown-item navbar__dropdown-item--seller"
-                >
-                  Become a Seller
-                </a>
+                {isSeller ? (
+                  <a href="/manage-store" className="navbar__dropdown-item ">
+                    Manage Store
+                  </a>
+                ) : (
+                  <a
+                    href="/BecomeSeller"
+                    className="navbar__dropdown-item navbar__dropdown-item--seller"
+                  >
+                    Become a Seller
+                  </a>
+                )}
 
                 <button
                   type="button"

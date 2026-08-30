@@ -17,6 +17,33 @@
   transform: translateY(-1px);
 }
 
-.link{
+.secondary-btn {
+  width: 100%;
+  border: 2px solid var(--green-700);
+  background: var(--white);
+  color: var(--green-700);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background: var(--green-50);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+}
+
+.secondary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.link {
   text-decoration: none;
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthInput from "../../components/InputField/Input";
-import AuthButton from "../../components/Button/Button";
+import PrimaryButton from "../../components/Button/Button";
 import { becomeSeller, createStore } from "../../services/becomeSellerAPI";
 import "../Auth/AuthPage.css";
 
@@ -42,6 +42,9 @@ function BecomeSeller() {
 
       // Then, create the store
       await createStore(formData.storeName, formData.storeDescription);
+
+      // Update user role in localStorage
+      localStorage.setItem("userRole", "seller");
 
       setSuccessMessage("You are now a seller! Your store has been created.");
 
@@ -109,7 +112,7 @@ function BecomeSeller() {
                 <p className="auth-success">{successMessage}</p>
               )}
 
-              <AuthButton
+              <PrimaryButton
                 label={isSubmitting ? "Creating Store..." : "Become a Seller"}
                 disabled={isSubmitting}
               />
