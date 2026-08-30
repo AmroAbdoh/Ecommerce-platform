@@ -1,9 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/Auth/Login";
 import ForgetPassword from "./pages/Auth/ForgetPassword";
-import Home from "./pages/Home/Home"
+import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile/Profile";
 import BecomeSeller from "./pages/BecomeSeller/BecomeSeller";
+import ManageStore from "./pages/ManageStore/ManageStore";
 
 export default function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function AppRoutes() {
       <Route path="/forgetPassword" element={<ForgetPassword />} />
       <Route path="/Profile" element={<Profile />} />
       <Route path="/BecomeSeller" element={<BecomeSeller />} />
+      <Route path="/manage-store" element={<ManageStore />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

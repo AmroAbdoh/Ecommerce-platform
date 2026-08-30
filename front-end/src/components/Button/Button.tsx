@@ -5,7 +5,7 @@ type ButtonProps = {
   disabled?: boolean;
   onClick?: () => void;
   type?: "submit" | "button";
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "danger";
 };
 
 function PrimaryButton({
@@ -15,7 +15,12 @@ function PrimaryButton({
   type = "submit",
   variant = "primary",
 }: ButtonProps) {
-  const buttonClass = variant === "secondary" ? "secondary-btn" : "primary-btn";
+  const buttonClass =
+    variant === "secondary"
+      ? "secondary-btn"
+      : variant === "danger"
+        ? "danger-btn"
+        : "primary-btn";
 
   return (
     <button
