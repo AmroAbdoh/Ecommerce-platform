@@ -16,7 +16,7 @@ const login = async (req, res, next) => {
   try {
     const email = (req.body.email || "").trim().toLowerCase();
     const password = (req.body.password || "").trim();
-    // 
+    //
 
     if (!email || !password) {
       return next(new BadRequestError("Please provide email and password"));
@@ -43,7 +43,34 @@ const login = async (req, res, next) => {
   }
 };
 
+const forgetPassword = async (req, res, next) => {
+  try {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const newPassword = (req.body.newPassword || "").trim();
+
+    if (!email || !newPassword) {
+      return next(new BadRequestError("Please provide email and new password"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return next(new UnauthenticatedError("Invalid Credentials"));
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(StatusCodes.OK).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
+  forgetPassword,
 };
