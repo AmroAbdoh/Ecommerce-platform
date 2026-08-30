@@ -115,7 +115,7 @@ function AuthPage() {
                   <span>Remember me</span>
                 </label>
                 {isLogin && (
-                  <a href="#" className="forgot-link">
+                  <a href="/forgetPassword" className="forgot-link">
                     Forgot password?
                   </a>
                 )}

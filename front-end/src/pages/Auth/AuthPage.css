@@ -23,9 +23,8 @@
       center/cover no-repeat;
   display: flex;
   align-items: flex-end;
-  
-  padding: 48px;
 
+  padding: 48px;
 }
 
 .auth-visual-content {
@@ -115,12 +114,33 @@
   cursor: pointer;
 }
 
-
 .auth-footer {
   text-align: center;
   margin-top: 4px;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.auth-notification {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.auth-notification.error {
+  background: #fff1f2;
+  color: #b42318;
+  border: 1px solid #fecdd3;
+}
+
+.auth-notification.success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
 }
 
 @media (max-width: 900px) {
