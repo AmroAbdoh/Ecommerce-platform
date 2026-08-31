@@ -4,6 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const storeRoutes = require("./routes/storeRoutes");
 const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use("/api/stores", storeRoutes);
 
 // Product
 app.use("/api/products", productRoutes);
+
+// Cart
+app.use("/api/cart", cartRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

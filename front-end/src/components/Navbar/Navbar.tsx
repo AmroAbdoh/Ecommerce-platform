@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllProducts, type Product } from "../../services/productApi";
 import "./navbar.css";
 
 function Navbar() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("token")),
   );
@@ -9,6 +12,8 @@ function Navbar() {
     localStorage.getItem("userRole") === "seller",
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -23,6 +28,16 @@ function Navbar() {
       }
     };
 
+    const loadProducts = async () => {
+      try {
+        const data = await getAllProducts();
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error("Failed to load products for navbar search", error);
+      }
+    };
+
+    loadProducts();
     window.addEventListener("storage", syncAuthState);
     document.addEventListener("mousedown", handleClickOutside);
 
@@ -36,9 +51,21 @@ function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     localStorage.removeItem("userRole");
+    localStorage.removeItem("userEmail");
     setIsLoggedIn(false);
     setIsSeller(false);
     setIsMenuOpen(false);
+    navigate("/", { replace: true });
+    window.location.reload();
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const goToProduct = (productId: string) => {
+    setSearchTerm("");
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -59,14 +86,36 @@ function Navbar() {
           <input
             type="search"
             name="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search products"
             className="navbar__search-input"
           />
+
+          {searchTerm.trim() && filteredProducts.length > 0 && (
+            <div className="navbar__search-dropdown">
+              {filteredProducts.slice(0, 6).map((product) => (
+                <button
+                  key={product._id}
+                  type="button"
+                  className="navbar__search-result"
+                  onClick={() => goToProduct(product._id)}
+                >
+                  <span>{product.name}</span>
+                  <small>${product.price}</small>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       <div className="navbar__actions">
-        <button type="button" className="navbar__button">
+        <button
+          type="button"
+          className="navbar__button"
+          onClick={() => navigate("/cart")}
+        >
           Cart
         </button>
 

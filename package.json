@@ -1,0 +1,13 @@
+{
+  "name": "ecommerce-platform",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix back-end run dev\" \"npm --prefix front-end run dev\"",
+    "dev:backend": "npm --prefix back-end run dev",
+    "dev:frontend": "npm --prefix front-end run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

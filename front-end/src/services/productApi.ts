@@ -34,6 +34,18 @@ export type SellerProductsResponse = {
   products: Product[];
 };
 
+export const getAllProducts = async () => {
+  const response = await api.get<SellerProductsResponse>("/products");
+  return response.data;
+};
+
+export const getProductById = async (productId: string) => {
+  const response = await api.get<{ product: Product }>(
+    `/products/${productId}`,
+  );
+  return response.data;
+};
+
 export const createProduct = async (payload: ProductInput) => {
   const token = localStorage.getItem("token");
 

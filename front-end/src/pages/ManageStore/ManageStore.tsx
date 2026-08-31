@@ -15,6 +15,7 @@ type ProductFormState = {
   price: number;
   category: string;
   stock: number;
+  images: string;
 };
 
 const emptyForm: ProductFormState = {
@@ -23,6 +24,7 @@ const emptyForm: ProductFormState = {
   price: 0,
   category: "Other",
   stock: 0,
+  images: "",
 };
 
 function ManageStore() {
@@ -31,6 +33,7 @@ function ManageStore() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [formData, setFormData] = useState<ProductFormState>(emptyForm);
 
   const loadProducts = async () => {
@@ -58,6 +61,7 @@ function ManageStore() {
       price: product.price,
       category: product.category,
       stock: product.stock,
+      images: product.images?.join("\n") || "",
     });
   };
 
@@ -82,6 +86,10 @@ function ManageStore() {
         price: Number(formData.price),
         category: formData.category,
         stock: Number(formData.stock),
+        images: formData.images
+          .split("\n")
+          .map((image) => image.trim())
+          .filter(Boolean),
       });
 
       setShowCreateForm(false);
@@ -100,6 +108,10 @@ function ManageStore() {
         price: Number(formData.price),
         category: formData.category,
         stock: Number(formData.stock),
+        images: formData.images
+          .split("\n")
+          .map((image) => image.trim())
+          .filter(Boolean),
       });
 
       setEditingId(null);
@@ -119,9 +131,72 @@ function ManageStore() {
     }
   };
 
+  const confirmDeleteProduct = (product: Product) => {
+    setProductToDelete(product);
+  };
+
+  const confirmDeleteModal = async () => {
+    if (!productToDelete) return;
+
+    await handleDelete(productToDelete._id);
+    setProductToDelete(null);
+  };
+
   return (
     <>
       <Navbar />
+
+      {productToDelete && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15, 23, 42, 0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+            zIndex: 1000,
+          }}
+          onClick={() => setProductToDelete(null)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              padding: 24,
+              width: "100%",
+              maxWidth: 440,
+              boxShadow: "0 20px 50px rgba(0,0,0,0.2)",
+            }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 style={{ marginTop: 0, marginBottom: 12 }}>Delete Product</h3>
+            <p
+              style={{ margin: "0 0 20px", color: "#4b5563", lineHeight: 1.5 }}
+            >
+              Are you sure you want to delete "{productToDelete.name}"?
+            </p>
+
+            <div
+              style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}
+            >
+              <Button
+                label="Cancel"
+                type="button"
+                variant="secondary"
+                onClick={() => setProductToDelete(null)}
+              />
+              <Button
+                label="Delete"
+                type="button"
+                variant="danger"
+                onClick={confirmDeleteModal}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 20px" }}>
         <div
@@ -167,56 +242,16 @@ function ManageStore() {
             <h3 style={{ marginTop: 0 }}>Add New Product</h3>
 
             <div style={{ display: "grid", gap: 12 }}>
-              <input
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Product name"
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: 8,
-                  border: "1px solid #ddd",
-                }}
-              />
-
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Description"
-                rows={3}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: 8,
-                  border: "1px solid #ddd",
-                }}
-              />
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 10,
-                }}
-              >
+              <div style={{ display: "grid", gap: 6 }}>
+                <label htmlFor="create-name" style={{ fontWeight: 600 }}>
+                  Product Name
+                </label>
                 <input
-                  name="price"
-                  type="number"
-                  value={formData.price}
+                  id="create-name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Price"
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 8,
-                    border: "1px solid #ddd",
-                  }}
-                />
-                <input
-                  name="stock"
-                  type="number"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  placeholder="Stock"
+                  placeholder="Product name"
                   style={{
                     padding: "10px 12px",
                     borderRadius: 8,
@@ -225,23 +260,113 @@ function ManageStore() {
                 />
               </div>
 
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
+              <div style={{ display: "grid", gap: 6 }}>
+                <label htmlFor="create-description" style={{ fontWeight: 600 }}>
+                  Description
+                </label>
+                <textarea
+                  id="create-description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  placeholder="Description"
+                  rows={3}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    border: "1px solid #ddd",
+                  }}
+                />
+              </div>
+
+              <div
                 style={{
-                  padding: "10px 12px",
-                  borderRadius: 8,
-                  border: "1px solid #ddd",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
                 }}
               >
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Books">Books</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Home">Home</option>
-                <option value="Other">Other</option>
-              </select>
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label htmlFor="create-price" style={{ fontWeight: 600 }}>
+                    Price
+                  </label>
+                  <input
+                    id="create-price"
+                    name="price"
+                    type="number"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    placeholder="Price"
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label htmlFor="create-stock" style={{ fontWeight: 600 }}>
+                    Stock
+                  </label>
+                  <input
+                    id="create-stock"
+                    name="stock"
+                    type="number"
+                    value={formData.stock}
+                    onChange={handleInputChange}
+                    placeholder="Stock"
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: 6 }}>
+                <label htmlFor="create-images" style={{ fontWeight: 600 }}>
+                  Image URLs
+                </label>
+                <textarea
+                  id="create-images"
+                  name="images"
+                  value={formData.images}
+                  onChange={handleInputChange}
+                  placeholder="Paste one image URL per line"
+                  rows={2}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    border: "1px solid #ddd",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gap: 6 }}>
+                <label htmlFor="create-category" style={{ fontWeight: 600 }}>
+                  Category
+                </label>
+                <select
+                  id="create-category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    border: "1px solid #ddd",
+                  }}
+                >
+                  <option value="Electronics">Electronics</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Books">Books</option>
+                  <option value="Gaming">Gaming</option>
+                  <option value="Home">Home</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
               <div style={{ display: "flex", gap: 10 }}>
                 <Button
@@ -330,64 +455,38 @@ function ManageStore() {
                       fontSize: 14,
                       marginBottom: 16,
                     }}
-                  >
-                    {product.images && product.images.length > 0
-                      ? "Product Image"
-                      : "No Image"}
+                    >
+                      {product.images?.[0] ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: 12,
+                          }}
+                        />
+                      ) : (
+                        "No Image"
+                      )}
                   </div>
 
                   {isEditing ? (
                     <div style={{ display: "grid", gap: 10 }}>
-                      <input
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Product name"
-                        style={{
-                          padding: "10px 12px",
-                          borderRadius: 8,
-                          border: "1px solid #ddd",
-                        }}
-                      />
-
-                      <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        placeholder="Description"
-                        rows={3}
-                        style={{
-                          padding: "10px 12px",
-                          borderRadius: 8,
-                          border: "1px solid #ddd",
-                        }}
-                      />
-
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
-                          gap: 10,
-                        }}
-                      >
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label
+                          htmlFor={`edit-name-${product._id}`}
+                          style={{ fontWeight: 600 }}
+                        >
+                          Product Name
+                        </label>
                         <input
-                          name="price"
-                          type="number"
-                          value={formData.price}
+                          id={`edit-name-${product._id}`}
+                          name="name"
+                          value={formData.name}
                           onChange={handleInputChange}
-                          placeholder="Price"
-                          style={{
-                            padding: "10px 12px",
-                            borderRadius: 8,
-                            border: "1px solid #ddd",
-                          }}
-                        />
-                        <input
-                          name="stock"
-                          type="number"
-                          value={formData.stock}
-                          onChange={handleInputChange}
-                          placeholder="Stock"
+                          placeholder="Product name"
                           style={{
                             padding: "10px 12px",
                             borderRadius: 8,
@@ -396,23 +495,128 @@ function ManageStore() {
                         />
                       </div>
 
-                      <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label
+                          htmlFor={`edit-description-${product._id}`}
+                          style={{ fontWeight: 600 }}
+                        >
+                          Description
+                        </label>
+                        <textarea
+                          id={`edit-description-${product._id}`}
+                          name="description"
+                          value={formData.description}
+                          onChange={handleInputChange}
+                          placeholder="Description"
+                          rows={3}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                      </div>
+
+                      <div
                         style={{
-                          padding: "10px 12px",
-                          borderRadius: 8,
-                          border: "1px solid #ddd",
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 10,
                         }}
                       >
-                        <option value="Electronics">Electronics</option>
-                        <option value="Clothing">Clothing</option>
-                        <option value="Books">Books</option>
-                        <option value="Gaming">Gaming</option>
-                        <option value="Home">Home</option>
-                        <option value="Other">Other</option>
-                      </select>
+                        <div style={{ display: "grid", gap: 6 }}>
+                          <label
+                            htmlFor={`edit-price-${product._id}`}
+                            style={{ fontWeight: 600 }}
+                          >
+                            Price
+                          </label>
+                          <input
+                            id={`edit-price-${product._id}`}
+                            name="price"
+                            type="number"
+                            value={formData.price}
+                            onChange={handleInputChange}
+                            placeholder="Price"
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 8,
+                              border: "1px solid #ddd",
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gap: 6 }}>
+                          <label
+                            htmlFor={`edit-stock-${product._id}`}
+                            style={{ fontWeight: 600 }}
+                          >
+                            Stock
+                          </label>
+                          <input
+                            id={`edit-stock-${product._id}`}
+                            name="stock"
+                            type="number"
+                            value={formData.stock}
+                            onChange={handleInputChange}
+                            placeholder="Stock"
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 8,
+                              border: "1px solid #ddd",
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label
+                          htmlFor={`edit-images-${product._id}`}
+                          style={{ fontWeight: 600 }}
+                        >
+                          Image URLs
+                        </label>
+                        <textarea
+                          id={`edit-images-${product._id}`}
+                          name="images"
+                          value={formData.images}
+                          onChange={handleInputChange}
+                          placeholder="Paste one image URL per line"
+                          rows={2}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label
+                          htmlFor={`edit-category-${product._id}`}
+                          style={{ fontWeight: 600 }}
+                        >
+                          Category
+                        </label>
+                        <select
+                          id={`edit-category-${product._id}`}
+                          name="category"
+                          value={formData.category}
+                          onChange={handleInputChange}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          <option value="Electronics">Electronics</option>
+                          <option value="Clothing">Clothing</option>
+                          <option value="Books">Books</option>
+                          <option value="Gaming">Gaming</option>
+                          <option value="Home">Home</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
 
                       <div style={{ display: "flex", gap: 10 }}>
                         <Button
@@ -480,7 +684,7 @@ function ManageStore() {
                           label="Delete"
                           type="button"
                           variant="danger"
-                          onClick={() => handleDelete(product._id)}
+                          onClick={() => confirmDeleteProduct(product)}
                         />
                       </div>
                     </>
