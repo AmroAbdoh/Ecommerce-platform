@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Button from "../../components/Button/Button";
+import ModalCheckout from "../../components/ModalCheckout/ModalCheckout";
 import {
   addToCart,
   clearCart,
@@ -18,6 +19,7 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [updatingProductId, setUpdatingProductId] = useState("");
   const [error, setError] = useState("");
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   const loadCart = async () => {
     try {
@@ -59,6 +61,17 @@ function Cart() {
       setError(err?.response?.data?.message || "Could not clear your cart");
     } finally {
       setUpdatingProductId("");
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    // Clear cart after successful payment
+    try {
+      setCart(await clearCart());
+      // Show success message or redirect
+      setError(""); // Clear any errors
+    } catch (err: any) {
+      console.error("Failed to clear cart after payment:", err);
     }
   };
 
@@ -213,7 +226,11 @@ function Cart() {
                 <span>Total</span>
                 <strong>${subtotal.toFixed(2)}</strong>
               </div>
-              <Button label="Checkout" type="button" disabled />
+              <Button
+                label="Checkout"
+                type="button"
+                onClick={() => setIsCheckoutOpen(true)}
+              />
               <button
                 type="button"
                 className="cart-continue-button"
@@ -224,6 +241,13 @@ function Cart() {
             </aside>
           </div>
         )}
+
+        <ModalCheckout
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          cart={cart}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
       </main>
     </>
   );

@@ -16,6 +16,7 @@ export type Product = {
     _id: string;
     name: string;
     logo?: string;
+    owner?: string;
   };
   createdAt?: string;
 };

@@ -16,6 +16,7 @@ function Home() {
   const [addingProductId, setAddingProductId] = useState("");
   const [addedProductId, setAddedProductId] = useState("");
   const [cartError, setCartError] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const loadProducts = async () => {
     try {
@@ -32,7 +33,22 @@ function Home() {
 
   useEffect(() => {
     loadProducts();
+
+    // Extract user ID from token
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setCurrentUserId(payload.userId);
+      } catch (e) {
+        console.error("Failed to parse token");
+      }
+    }
   }, []);
+
+  const isOwnProduct = (product: Product) => {
+    return currentUserId && (product.store as any)?.owner === currentUserId;
+  };
 
   const handleAddToCart = async (productId: string) => {
     if (!localStorage.getItem("token")) {
@@ -47,7 +63,9 @@ function Home() {
       await addToCart(productId);
       setAddedProductId(productId);
     } catch (err: any) {
-      setCartError(err?.response?.data?.message || "Could not add product to cart");
+      setCartError(
+        err?.response?.data?.message || "Could not add product to cart",
+      );
     } finally {
       setAddingProductId("");
     }
@@ -119,11 +137,11 @@ function Home() {
             {filteredProducts.map((product) => (
               <div key={product._id} className="product-card">
                 <div className="product-image">
-                        {product.images?.[0] ? (
-                          <img src={product.images[0]} alt={product.name} />
-                        ) : (
-                          "No Image"
-                        )}
+                  {product.images?.[0] ? (
+                    <img src={product.images[0]} alt={product.name} />
+                  ) : (
+                    "No Image"
+                  )}
                 </div>
 
                 <div className="product-row">
@@ -150,16 +168,20 @@ function Home() {
                   <div className="product-button-wrap">
                     <Button
                       label={
-                        addingProductId === product._id
-                          ? "Adding..."
-                          : addedProductId === product._id
-                            ? "Added to cart"
-                            : "Add to cart"
+                        isOwnProduct(product)
+                          ? "Your Product"
+                          : addingProductId === product._id
+                            ? "Adding..."
+                            : addedProductId === product._id
+                              ? "Added to cart"
+                              : "Add to cart"
                       }
                       type="button"
                       variant="secondary"
                       disabled={
-                        product.stock < 1 || addingProductId === product._id
+                        isOwnProduct(product) ||
+                        product.stock < 1 ||
+                        addingProductId === product._id
                       }
                       onClick={() => handleAddToCart(product._id)}
                     />

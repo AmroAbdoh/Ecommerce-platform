@@ -40,10 +40,16 @@ const addToCart = async (req, res, next) => {
       return next(new BadRequestError("Quantity must be a positive integer"));
     }
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate("store");
 
     if (!product) {
       return next(new NotFoundError("Product not found"));
+    }
+
+    if (product.store.owner.toString() === userId) {
+      return next(
+        new BadRequestError("You cannot add your own product to cart"),
+      );
     }
 
     if (product.stock < 1) {

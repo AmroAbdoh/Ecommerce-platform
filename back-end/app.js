@@ -5,6 +5,8 @@ const userRoutes = require("./routes/userRoutes");
 const storeRoutes = require("./routes/storeRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
@@ -31,6 +33,12 @@ app.use("/api/products", productRoutes);
 
 // Cart
 app.use("/api/cart", cartRoutes);
+
+// Payment
+app.use("/api/payments", paymentRoutes);
+
+// Orders
+app.use("/api/orders", orderRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

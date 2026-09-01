@@ -59,7 +59,7 @@ const getAllProducts = async (req, res, next) => {
     const { category, store } = req.query;
 
     // Build filter object
-    const filter = {};
+    const filter = { stock: { $gt: 0 } }; // Only show products with stock > 0
     if (category) {
       filter.category = category;
     }
@@ -68,7 +68,7 @@ const getAllProducts = async (req, res, next) => {
     }
 
     const products = await Product.find(filter)
-      .populate("store", "name logo")
+      .populate("store", "name logo owner")
       .sort({ createdAt: -1 });
 
     return res.status(StatusCodes.OK).json({
@@ -90,7 +90,7 @@ const getSellerProducts = async (req, res, next) => {
     }
 
     const products = await Product.find({ store: store._id })
-      .populate("store", "name logo")
+      .populate("store", "name logo owner")
       .sort({ createdAt: -1 });
 
     return res.status(StatusCodes.OK).json({
@@ -112,7 +112,7 @@ const getOneProduct = async (req, res, next) => {
 
     const product = await Product.findById(id).populate(
       "store",
-      "name logo description",
+      "name logo description owner",
     );
 
     if (!product) {
